@@ -12,6 +12,12 @@ interface ModuleProps{
 }
 
 export function Modules({moduleIndex, title, amountOfLession} : ModuleProps){
+  const {currentMouleIndex, currentLessionIndex} = useAppSelector(state => {
+    const {currentMouleIndex, currentLessionIndex} = state.player
+
+    return { currentMouleIndex, currentLessionIndex}
+  })
+  
   const lessions = useAppSelector(state => {
     return state.player.courser.modules[moduleIndex].lessons
   })
@@ -19,7 +25,7 @@ export function Modules({moduleIndex, title, amountOfLession} : ModuleProps){
   const dispath = useDispatch()
 
   return(
-    <Collapsible.Root className="group">
+    <Collapsible.Root className="group" defaultOpen={moduleIndex === 0}>
       <Collapsible.Trigger className="flex w-full items-center gap-3 bg-zinc-800 p-4">
         <div className="flex h-10 w-10 rounded-full items-center justify-center bg-zinc-900 text-xs">
           {moduleIndex + 1}
@@ -32,11 +38,14 @@ export function Modules({moduleIndex, title, amountOfLession} : ModuleProps){
       </Collapsible.Trigger>
       <Collapsible.Content className="relative flex flex-col gap-4 p-6">
        {lessions.map((lession, lessionIndex) => {
+          const isCurrent = currentMouleIndex === moduleIndex &&
+          currentLessionIndex === lessionIndex
           return (
             <Lession 
             key={lession.id} 
             title={lession.title} 
             duration={lession.duration} 
+            isCurrent={isCurrent}
             onPlay={() => dispath(play([moduleIndex, lessionIndex]))}
           />
           )

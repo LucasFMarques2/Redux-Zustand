@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const playerSlice = createSlice({
   name: 'player',
@@ -35,12 +35,31 @@ const playerSlice = createSlice({
   },
 
   reducers: {
-    play: (state, action) => {
+    play: (state, action: PayloadAction<[number, number]> ) => {
       state.currentMouleIndex = action.payload[0]
       state.currentLessionIndex = action.payload[1]
+    },
+
+    next: (state) => {
+      const nextLessionIndex = state.currentLessionIndex + 1;
+      const nextLession = state.courser.modules[state.currentMouleIndex].lessons[nextLessionIndex]
+
+      if(nextLession){
+        state.currentLessionIndex = nextLessionIndex
+        return
+      }
+
+      const nextModuleIndex = state.currentMouleIndex + 1
+      const nextModule = state.courser.modules[nextModuleIndex]
+
+      if (nextModule){
+        state.currentMouleIndex = nextModuleIndex
+        state.currentLessionIndex = 0
+      }
     }
+
   }
 })
 
 export const player = playerSlice.reducer
-export const { play } = playerSlice.actions
+export const { play, next } = playerSlice.actions
