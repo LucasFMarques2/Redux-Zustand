@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@plugin 'tailwind-scrollbar';
+
+body{
+  -webkit-font-smoothing: antialiase; 
+}
