@@ -1,36 +1,43 @@
 import Player from 'react-player'
-import { useAppSelector } from '../store'
-import { useDispatch } from 'react-redux'
-import { next } from '../store/slices/player'
+import { next, useCurrentlessons } from '../store/slices/player'
+import { useAppDispatch, useAppSelector } from '../store'
+import { Loader } from 'lucide-react'
 
 export function PlayerVideo() {
-  const dispatch = useDispatch()
-  
-  const lession = useAppSelector(state =>{
-      const { currentMouleIndex, currentLessionIndex } = state.player
+  const dispatch = useAppDispatch();
+  const { currentlessons } = useCurrentlessons();
+  const isLoading = useAppSelector(state => state.player.isLoading);
 
-      const currentLesson = state.player.courser.modules[currentMouleIndex].lessons[currentLessionIndex]
+  if (isLoading) {
+    return (
+      <div className="flex-1">
+        <div className="w-full bg-zinc-950 aspect-video flex items-center justify-center">
+          <Loader className="w-6 h-6 text-zinc-400 animate-spin"/>
+        </div>
+      </div>
+    );
+  }
 
-      return currentLesson
-  })
-
+  if (!currentlessons) {
+    return null;
+  }
 
   function handlePlay(){
-    dispatch(next())
+    dispatch(next());
   }
 
   return(
     <div className="flex-1">
-    <div className="w-ful bg-zinc-950 aspect-video">
-      <Player 
-        width={'100%'}
-        height={'100%'}
-        playing
-        onEnded={handlePlay}
-        controls
-        url={`https://www.youtube.com/watch?v=${lession.id}`}
-      />
+      <div className="w-full bg-zinc-950 aspect-video">
+        <Player 
+          width={'100%'}
+          height={'100%'}
+          playing
+          onEnded={handlePlay}
+          controls
+          url={`https://www.youtube.com/watch?v=${currentlessons?.id}`}
+        />
+      </div>
     </div>
-  </div>
-  )
+  );
 }

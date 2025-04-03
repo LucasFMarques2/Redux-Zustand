@@ -7,7 +7,8 @@ interface lessonProps{
   isCurrent?: boolean
 }
 
-export function Lession({ title, duration, onPlay, isCurrent = false} : lessonProps){
+export function Lessons({ title, duration, onPlay, isCurrent = false }: lessonProps) {
+
   return(
     <button 
       data-active={isCurrent}
